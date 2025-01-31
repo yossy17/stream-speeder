@@ -1,8 +1,28 @@
 // ==UserScript==
-// @name                Netflix Speeder
+// @name                Stream Speeder
 // @description         speed up/down video
-// @version             0.9
+// @version             0.1.1
 // @author              Yos_sy
+// @match               *://*.amazon.com/gp/video/*
+// @match               *://*.amazon.ca/gp/video/*
+// @match               *://*.amazon.com.mx/gp/video/*
+// @match               *://*.amazon.co.uk/gp/video/*
+// @match               *://*.amazon.de/gp/video/*
+// @match               *://*.amazon.fr/gp/video/*
+// @match               *://*.amazon.it/gp/video/*
+// @match               *://*.amazon.es/gp/video/*
+// @match               *://*.amazon.nl/gp/video/*
+// @match               *://*.amazon.se/gp/video/*
+// @match               *://*.amazon.pl/gp/video/*
+// @match               *://*.amazon.co.jp/gp/video/*
+// @match               *://*.amazon.com.au/gp/video/*
+// @match               *://*.amazon.in/gp/video/*
+// @match               *://*.amazon.cn/gp/video/*
+// @match               *://*.amazon.com.br/gp/video/*
+// @match               *://*.amazon.sa/gp/video/*
+// @match               *://*.amazon.ae/gp/video/*
+// @match               *://*.amazon.sg/gp/video/*
+// @match               *://*.amazon.com.tr/gp/video/*
 // @match               *://*.netflix.com/*
 // @namespace           http://tampermonkey.net/
 // @icon                https://www.google.com/s2/favicons?sz=64&domain=netflix.com
@@ -18,9 +38,9 @@
 
   // 定数
   const CONFIG = {
-    STORAGE_KEY: "netflix_rate",
-    TITLE_SELECTOR: ".watch-video h4",
-    VIDEO_SELECTOR: "video",
+    STORAGE_KEY: "stream_rate",
+    TITLE_SELECTOR: ".watch-video h4, h1.atvwebplayersdk-title-text",
+    VIDEO_SELECTOR: ".rendererContainer video, .watch-video--player-view video",
   };
 
   // キーボードイベントリスナー
@@ -177,8 +197,7 @@
     window.addEventListener("keydown", handleKeyPress);
 
     // ビデオ監視を設定
-    const cleanup = setupVideoWatcher();
-    window.addEventListener("unload", cleanup);
+    window.addEventListener("unload", setupVideoWatcher());
   }
 
   // DOMContentLoaded イベントで初期化
