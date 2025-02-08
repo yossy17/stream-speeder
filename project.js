@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name                Stream Speeder
 // @description         speed up/down video
-// @version             0.1.1
+// @version             0.1.2
 // @author              Yos_sy
 // @match               *://*.amazon.com/gp/video/*
 // @match               *://*.amazon.ca/gp/video/*
@@ -39,7 +39,8 @@
   // 定数
   const CONFIG = {
     STORAGE_KEY: "stream_rate",
-    TITLE_SELECTOR: ".watch-video h4, h1.atvwebplayersdk-title-text",
+    TITLE_SELECTOR:
+      "div[data-uia='video-title'], h1.atvwebplayersdk-title-text",
     VIDEO_SELECTOR: ".rendererContainer video, .watch-video--player-view video",
   };
 
