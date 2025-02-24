@@ -5,19 +5,19 @@
 
 ## 機能
 
-| Key | Speed |      Supported       |
-| :-: | ----: | :------------------: |
-|  ;  | 0.25- | Netflix, Prime Video |
-|  '  | 0.25+ | Netflix, Prime Video |
-|  [  |  0.5- |       Netflix        |
-|  ]  |  0.5+ |       Netflix        |
-|  -  |    1- | Netflix, Prime Video |
-|  +  |    1+ | Netflix, Prime Video |
-|  `  |  0.5x |       Netflix        |
-|  1  |    1x |       Netflix        |
-|  2  |    2x |       Netflix        |
-|  3  |    3x |       Netflix        |
-|  4  |    4x |       Netflix        |
+| Key | Speed |
+| :-: | ----: |
+|  ;  | 0.25- |
+|  '  | 0.25+ |
+|  [  |  0.5- |
+|  ]  |  0.5+ |
+|  -  |    1- |
+|  =  |    1+ |
+|  `  |  0.5x |
+|  1  |    1x |
+|  2  |    2x |
+|  3  |    3x |
+|  4  |    4x |
 
 ---
 
