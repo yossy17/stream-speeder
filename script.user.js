@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name                Stream Speeder
 // @description         speed up/down video
-// @version             0.1.3
+// @version             0.1.4
 // @author              Yos_sy
 // @match               *://*.amazon.com/*
 // @match               *://*.amazon.ca/*
@@ -39,8 +39,6 @@
   // 定数
   const CONFIG = {
     STORAGE_KEY: "stream_rate",
-    TITLE_SELECTOR:
-      "div[data-uia='video-title'], h1.atvwebplayersdk-title-text",
     VIDEO_SELECTOR: ".rendererContainer video, .watch-video--player-view video",
   };
 
@@ -72,6 +70,8 @@
 
   // ビデオ要素の制御
   const videoController = {
+    overlay: null,
+
     setRate(el = null) {
       el = el || document.querySelector(CONFIG.VIDEO_SELECTOR);
       if (el) {
@@ -80,13 +80,78 @@
       }
     },
 
-    // タイトルに再生速度を表示
-    updateTitle() {
-      const titleEl = document.querySelector(CONFIG.TITLE_SELECTOR);
-      if (titleEl) {
-        const title = titleEl.innerText.replace(/^\[.*\] /, "");
-        titleEl.innerHTML = `[${rate}x] ${title}`;
+    // 再生速度オーバーレイ
+    showRateOverlay() {
+      let overlay = document.getElementById("rate-overlay");
+
+      // 既存のオーバーレイがあれば、削除して新しく作成する
+      if (overlay && overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+        this.overlay = null;
       }
+
+      // 新しいオーバーレイを作成
+      overlay = document.createElement("div");
+      overlay.id = "rate-overlay";
+      overlay.style.position = "fixed";
+      overlay.style.top = "50%";
+      overlay.style.left = "50%";
+      overlay.style.transform = "translate(-50%, -50%) scale(0.5)";
+      overlay.style.background = "rgba(0, 0, 0, 0.7)";
+      overlay.style.color = "white";
+      overlay.style.width = "96px";
+      overlay.style.height = "96px";
+      overlay.style.fontSize = "24px";
+      overlay.style.fontWeight = "bold";
+      overlay.style.borderRadius = "50%";
+      overlay.style.zIndex = "calc(infinity)";
+      overlay.style.opacity = "0";
+      overlay.style.transition =
+        "opacity 0.3s ease-out, transform 0.3s ease-out";
+      overlay.style.display = "flex";
+      overlay.style.justifyContent = "center";
+      overlay.style.alignItems = "center";
+
+      // フルスクリーン要素があればそこに、なければbodyに追加
+      const container = document.fullscreenElement || document.body;
+      container.appendChild(overlay);
+
+      this.overlay = overlay;
+
+      overlay.innerText = `${rate}x`;
+
+      requestAnimationFrame(() => {
+        overlay.style.opacity = "1";
+        overlay.style.transform = "translate(-50%, -50%) scale(1)";
+      });
+
+      if (this.overlayTimeout) {
+        clearTimeout(this.overlayTimeout);
+      }
+
+      this.overlayTimeout = setTimeout(() => {
+        overlay.style.opacity = "0";
+        overlay.style.transform = "translate(-50%, -50%) scale(0.5)";
+
+        this.overlayFadeTimeout = setTimeout(() => {
+          if (overlay.parentNode) {
+            overlay.parentNode.removeChild(overlay);
+            this.overlay = null;
+          }
+        }, 300);
+      }, 500);
+    },
+
+    // フルスクリーンハンドラーの設定
+    setupFullscreenHandler() {
+      document.addEventListener("fullscreenchange", () => {
+        // オーバーレイが表示中の場合、フルスクリーン要素に移動
+        if (this.overlay && this.overlay.parentNode) {
+          const container = document.fullscreenElement || document.body;
+          this.overlay.parentNode.removeChild(this.overlay);
+          container.appendChild(this.overlay);
+        }
+      });
     },
   };
 
@@ -94,7 +159,6 @@
   function handleKeyPress(e) {
     let newRate = rate;
 
-    // 固定速度
     if (e.key === keyMap.rate0_5) newRate = 0.5;
     else if (e.key === keyMap.rate1) newRate = 1;
     else if (e.key === keyMap.rate2) newRate = 2;
@@ -107,14 +171,12 @@
     else if (e.key === keyMap.forward0_5 && rate < 16) newRate = rate + 0.5;
     else if (e.key === keyMap.back1 && rate > 1) newRate = rate - 1;
     else if (e.key === keyMap.forward1 && rate < 16) newRate = rate + 1;
-    else {
-      return;
-    }
+    else return;
 
     // 再生速度を更新
     rate = newRate;
     videoController.setRate();
-    videoController.updateTitle();
+    videoController.showRateOverlay();
     rateStorage.save(rate);
   }
 
@@ -132,14 +194,10 @@
         // ビデオの読み込み完了後に速度設定
         if (videoEl.readyState >= 1) {
           videoController.setRate(videoEl);
-          videoController.updateTitle();
         } else {
           videoEl.addEventListener(
             "loadedmetadata",
-            () => {
-              videoController.setRate(videoEl);
-              videoController.updateTitle();
-            },
+            () => videoController.setRate(videoEl),
             { once: true }
           );
         }
@@ -151,8 +209,8 @@
         rateObserver = new MutationObserver(() => {
           if (videoEl.playbackRate !== rate) {
             rate = videoEl.playbackRate;
-            videoController.updateTitle();
             rateStorage.save(rate);
+            videoController.showRateOverlay();
           }
         });
         rateObserver.observe(videoEl, {
@@ -196,6 +254,9 @@
 
     // キーボードイベントリスナーを設定
     window.addEventListener("keydown", handleKeyPress);
+
+    // フルスクリーンハンドラーを設定
+    videoController.setupFullscreenHandler();
 
     // ビデオ監視を設定
     window.addEventListener("unload", setupVideoWatcher());
