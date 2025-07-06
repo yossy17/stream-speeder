@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name                Stream Speeder
 // @description         speed up/down video
-// @version             0.1.4
+// @version             0.1.5
 // @author              Yos_sy
 // @match               *://*.amazon.com/*
 // @match               *://*.amazon.ca/*
@@ -39,7 +39,7 @@
   // 定数
   const CONFIG = {
     STORAGE_KEY: "stream_rate",
-    VIDEO_SELECTOR: ".rendererContainer video, .watch-video--player-view video",
+    VIDEO_SELECTOR: ".watch-video video, .dv-player-fullscreen video",
   };
 
   // キーボードイベントリスナー
