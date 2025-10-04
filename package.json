@@ -1,0 +1,28 @@
+{
+  "name": "stream-speeder",
+  "version": "0.1.0",
+  "description": "A useful userscript",
+  "keywords": [
+    "userscript"
+  ],
+  "author": "Yos_sy",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev-server.ts",
+    "build:dev": "vite build --mode development",
+    "build": "vite build --mode production",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/browser-sync": "^2.29.0",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.1",
+    "@types/tampermonkey": "^5.0.3",
+    "browser-sync": "^3.0.4",
+    "chokidar": "^4.0.3",
+    "terser": "^5.44.0",
+    "typescript": "^5.9.3",
+    "vite": "^5.0.0"
+  }
+}
