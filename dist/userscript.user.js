@@ -7,7 +7,7 @@
 // @description:ja Netflix, Prime Video で再生速度を調整できます
 // @description:zh-CN 调整 Netflix 和 Prime Video 的播放速度
 // @description:ko Netflix 및 Prime Video 에서 재생 속도 조정
-// @version 0.1.0
+// @version 0.1.1
  // @author Yos_sy
  // @match *://*.amazon.com/*
 // @match *://*.amazon.ca/*
@@ -133,7 +133,7 @@
     }
   }
   const CONFIG = {
-    VIDEO_SELECTOR: ".watch-video video, #dv-web-player video",
+    VIDEO_SELECTOR: ".watch-video video, div[id^='dv-web-player'] video",
     VIDEO_DELAY: 500,
     RATE_CHECK_INTERVAL: 1e3
   };
