@@ -2,7 +2,7 @@ import { RateStorage } from "../storage";
 import { RateOverlay } from "../ui/overlay";
 
 const CONFIG = {
-  VIDEO_SELECTOR: ".watch-video video, #dv-web-player video",
+  VIDEO_SELECTOR: ".watch-video video, div[id^='dv-web-player'] video",
   VIDEO_DELAY: 500,
   RATE_CHECK_INTERVAL: 1000,
 };
